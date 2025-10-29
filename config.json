@@ -1,0 +1,12 @@
+{ 
+    "mode": "automatic", 
+    "user": ["@diyforu_della", "@diyforu_dellaus", "@diyforu_handmade"], 
+    "url": null, 
+    "room_id": null, 
+    "automatic_interval": 2, 
+    "proxy": null, 
+    "output": "videos", 
+    "duration": null, 
+    "telegram": false, 
+    "update_check": true 
+}
