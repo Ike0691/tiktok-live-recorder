@@ -1,0 +1,1 @@
+python src/main.py -mode automatic -user diyforu_della,diyforu_dellaus,diyforu_handmade -automatic_interval 2 -output videos
