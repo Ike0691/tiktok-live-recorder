@@ -1,5 +1,6 @@
 import os
 import time
+from pathlib import Path
 
 import ffmpeg
 
@@ -22,7 +23,7 @@ class VideoManagement:
         return False
 
     @staticmethod
-    def convert_flv_to_mp4(file):
+    def convert_flv_to_mp4(file, bitrate=None):
         """
         Convert the video from flv format to mp4 format
         """
@@ -35,16 +36,25 @@ class VideoManagement:
             return
 
         try:
-            ffmpeg.input(file).output(
-                file.replace("_flv.mp4", ".mp4"),
-                c="copy",
-                y="-y",
-            ).run(quiet=True)
+            output_args = {
+                "c": "copy",
+                "y": "-y",
+            }
+            output_file = file.replace("_flv.mp4", ".mp4")
+
+            if bitrate:
+                output_args["b:v"] = bitrate
+                del output_args["c"]
+                output_args["c:v"] = "libx264"
+                output_args["c:a"] = "copy"
+
+            ffmpeg.input(file).output(output_file, **output_args).run(quiet=True)
+
         except ffmpeg.Error as e:
             logger.error(
-                f"ffmpeg error: {e.stderr.decode() if hasattr(e, 'stderr') else str(e)}"
+                f"ffmpeg conversion failed: {e.stderr.decode() if hasattr(e, 'stderr') else str(e)}"
             )
+            return
 
         os.remove(file)
-
-        logger.info("Finished converting {}\n".format(file))
+        logger.info(f"Finished converting {Path(output_file).resolve()}\n")

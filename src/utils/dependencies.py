@@ -1,10 +1,8 @@
 import subprocess
-import sys
 import platform
 from subprocess import SubprocessError
 
 from .logger_manager import logger
-from .utils import is_linux
 
 
 def check_ffmpeg_binary():
@@ -120,15 +118,15 @@ def check_requests_library():
         return False
 
 
-def check_pyrogram_library():
+def check_telethon_library():
     try:
-        import pyrogram
+        import telethon
 
-        _ = pyrogram  # to avoid linting issues
+        _ = telethon  # to avoid linting issues
 
         return True
     except ModuleNotFoundError:
-        logger.error("pyrogram library is not installed")
+        logger.error("telethon library is not installed")
         return False
 
 
@@ -137,12 +135,8 @@ def install_requirements():
         print()
         logger.error("Installing requirements...\n")
 
-        cmd = [sys.executable, "-m", "pip", "install", "-r", "requirements.txt"]
-        if is_linux():
-            cmd.append("--break-system-packages")
-
         subprocess.run(
-            cmd,
+            ["uv", "sync", "--no-dev"],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.STDOUT,
             check=True,
@@ -162,7 +156,7 @@ def check_and_install_dependencies():
         check_argparse_library(),
         check_curl_cffi_library(),
         check_requests_library(),
-        check_pyrogram_library(),
+        check_telethon_library(),
         check_ffmpeg_binary(),
     ]
 
